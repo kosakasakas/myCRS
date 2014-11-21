@@ -11,7 +11,6 @@ public class UIcontroller : MonoBehaviour
 	
 	// Objects to be controlled.
 	GameObject musicPlayer;
-	Animator animator;
 
 	void Awake()
 	{
@@ -37,7 +36,7 @@ public class UIcontroller : MonoBehaviour
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			//canPlay = true;
 		}
-		GetComponent<Animator>().SetBool("PlayPool",canPlay);
+		//GetComponent<Animator>().SetBool("PlayPool",canPlay);
 	}
 
 	void StartMusic () {
@@ -47,7 +46,6 @@ public class UIcontroller : MonoBehaviour
 	}
 
 	void StartDance () {
-		animator.Play(" 003_NOT01_Final");
 	}
 	
 	void OnGUI ()

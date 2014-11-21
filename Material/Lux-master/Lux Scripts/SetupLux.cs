@@ -59,12 +59,12 @@ public class SetupLux : MonoBehaviour {
 
 
 	// Use this for initialization
-	void Start () {
+	public virtual void Start () {
 		UpdateLuxIBLSettings();
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	 public virtual void Update () {
 		#if UNITY_EDITOR
 		if(!Application.isPlaying) {
 			UpdateLuxIBLSettings();
