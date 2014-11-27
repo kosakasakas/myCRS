@@ -4,7 +4,7 @@ using System.Collections;
 [ExecuteInEditMode]
 public class test : SetupLux {
 	public int cubemapSize;
-	public bool oneFacePerFrame = true;
+	public bool oneFacePerFrame = false;
 	public bool useRealtimeReflect = false;
 	private Vector3 cameraPos = new Vector3 (0, 0,  0);
 	private Camera cam;
@@ -73,6 +73,9 @@ public class test : SetupLux {
 		//cam.RenderToCubemap (this.specularCube, faceMask);
 		 //this.diffuseCube.hideFlags = HideFlags.HideAndDontSave;
 		cam.RenderToCubemap (rtex, faceMask);
+		
+		rtex.SmoothEdges(4);
+
 		/*
 		if (!diff) {
 			diff = rtex;
@@ -82,6 +85,10 @@ public class test : SetupLux {
 			faceToRender = faceToRender % 6;
 			rtex = FastBlur (rtex, faceToRender, radius, iterations);
 		//this.diffuseCube = rtex;
+		} else {
+			for (int i = 0; i < 6; ++i) {
+				rtex = FastBlur (rtex, i, radius, iterations);
+			}
 		}
 		//this.diffuseCube = rtex;
 		//this.specularCube = rtex;
