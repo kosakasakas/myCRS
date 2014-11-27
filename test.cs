@@ -40,13 +40,13 @@ public class test : SetupLux {
 		if (oneFacePerFrame) {
 			int faceToRender = Time.frameCount % 6;
 			int faceMask = 1 << faceToRender;
-			UpdateCubemap (faceMask);
+			UpdateCubemap (faceMask, faceToRender);
 		} else {
 			UpdateCubemap (63); // all six faces
 		}
 	}
 
-	void UpdateCubemap(int faceMask) {
+	void UpdateCubemap(int faceMask, int faceToRender = -1) {
 		if (!cam) {
 			GameObject go = new GameObject ("CubemapCamera", typeof(Camera));
 			go.hideFlags = HideFlags.HideAndDontSave;
@@ -65,6 +65,8 @@ public class test : SetupLux {
 			rtex.hideFlags = HideFlags.HideAndDontSave;
 			//renderer.sharedMaterial.SetTexture ("_Cube", rtex);
 			//this.specularCube = (Cubemap)rtex;
+			Shader.SetGlobalTexture("_DiffCubeIBL", rtex);
+			Shader.SetGlobalTexture("_SpecCubeIBL", rtex);
 		}
 		
 		cam.transform.position = cameraPos;
@@ -76,12 +78,13 @@ public class test : SetupLux {
 			diff = rtex;
 		}
 */
-		//if (Time.frameCount % 30 == 0) {
-		diff = FastBlur (rtex, 4, radius, iterations);
-		this.diffuseCube = rtex;
-		//}
+		if (faceToRender >= 0) {
+			faceToRender = faceToRender % 6;
+			rtex = FastBlur (rtex, faceToRender, radius, iterations);
 		//this.diffuseCube = rtex;
-		this.specularCube = rtex;
+		}
+		//this.diffuseCube = rtex;
+		//this.specularCube = rtex;
 	}
 	/*
 	Cubemap FastBlur(Cubemap image, int radius, int iterarions) {
