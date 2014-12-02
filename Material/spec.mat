@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: spec
-  m_Shader: {fileID: 4800000, guid: c8f523f1d84df4dc995ac068522bd30e, type: 3}
+  m_Shader: {fileID: 4800000, guid: 9453771dcda7344c3b529869403746f2, type: 3}
   m_ShaderKeywords: []
   m_CustomRenderQueue: -1
   m_SavedProperties:
@@ -45,7 +45,7 @@ Material:
         first:
           name: _SpecTex
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: b2742444facc548b48752491f9e04f64, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
