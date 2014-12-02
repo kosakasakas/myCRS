@@ -161,7 +161,7 @@ public class test : SetupLux {
 						} else {
 							int index_x = xx;
 							int index_y = y - _H;
-							Color col = getOverTopPixel(image, face, index_x, index_y);
+							Color col = getOverBottomPixel(image, face, index_x, index_y);
 							AddPixel(col);
 						}
 					}
@@ -171,7 +171,7 @@ public class test : SetupLux {
 						if (y < 0) {
 							int index_x = xx;
 							int index_y = 0 - y;
-							Color col = getOverBottomPixel(image, face, index_x, index_y);
+							Color col = getOverTopPixel(image, face, index_x, index_y);
 							AddPixel(col);
 						} else {
 							AddPixel(image.GetPixel(face, xx, y));
@@ -280,7 +280,7 @@ public class test : SetupLux {
 		//pixCol = new Color (0, 0, 200);
 		return pixCol;
 	}
-	Color getOverTopPixel(Cubemap image, CubemapFace face, int index_x, int index_y) {
+	Color getOverBottomPixel(Cubemap image, CubemapFace face, int index_x, int index_y) {
 		Color pixCol;
 		CubemapFace targetFace = CubemapFace.NegativeX;
 		int x=0, y=0, axis;  // axis= +-1(x) +-2(y)
@@ -289,19 +289,19 @@ public class test : SetupLux {
 			x = cubemapSize - index_y;
 			y = index_x;
 		} else if (face == CubemapFace.PositiveZ) {
-			targetFace = CubemapFace.PositiveY;
+			targetFace = CubemapFace.NegativeY;
 			x = index_x;
-			y = cubemapSize - index_y;
+			y = index_y;
 		} else if (face == CubemapFace.NegativeZ) {
-			targetFace = CubemapFace.PositiveY;
+			targetFace = CubemapFace.NegativeY;
 			x = cubemapSize - index_x;
 			y = cubemapSize - index_y;
 		} else if (face == CubemapFace.NegativeX) {
 			targetFace = CubemapFace.NegativeY;
-			x = cubemapSize - index_y;
+			x = index_y;
 			y = cubemapSize - index_x;
 		} else if (face == CubemapFace.PositiveY) {
-			targetFace = CubemapFace.NegativeZ;
+			targetFace = CubemapFace.PositiveZ;
 			x = index_x;
 			y = cubemapSize - index_y;
 		} else if (face == CubemapFace.NegativeY) {
@@ -313,7 +313,7 @@ public class test : SetupLux {
 		//pixCol = new Color (0, 0, 200);
 		return pixCol;
 	}
-	Color getOverBottomPixel(Cubemap image, CubemapFace face, int index_x, int index_y) {
+	Color getOverTopPixel(Cubemap image, CubemapFace face, int index_x, int index_y) {
 		Color pixCol;
 		CubemapFace targetFace = CubemapFace.NegativeX;
 		int x=0, y=0, axis;  // axis= +-1(x) +-2(y)
@@ -322,19 +322,19 @@ public class test : SetupLux {
 			x = cubemapSize - index_y;
 			y = index_x;
 		} else if (face == CubemapFace.PositiveZ) {
-			targetFace = CubemapFace.NegativeY;
+			targetFace = CubemapFace.PositiveY;
 			x = index_x;
-			y = index_y;
+			y = cubemapSize - index_y;
 		} else if (face == CubemapFace.NegativeZ) {
-			targetFace = CubemapFace.NegativeY;
+			targetFace = CubemapFace.PositiveY;
 			x = cubemapSize - index_x;
 			y = cubemapSize - index_y;
 		} else if (face == CubemapFace.NegativeX) {
 			targetFace = CubemapFace.PositiveY;
-			x = cubemapSize - index_y;
-			y = cubemapSize - index_x;
+			x = index_y;
+			y = index_x;
 		} else if (face == CubemapFace.PositiveY) {
-			targetFace = CubemapFace.PositiveZ;
+			targetFace = CubemapFace.NegativeZ;
 			x = cubemapSize - index_x;
 			y = cubemapSize - index_y;
 		} else if (face == CubemapFace.NegativeY) {
