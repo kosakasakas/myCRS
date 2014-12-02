@@ -3488,9 +3488,9 @@ MonoBehaviour:
   Lux_RippleAnimSpeed: 1
   Lux_WaterBumpDistance: 20
   cubemapSize: 16
-  oneFacePerFrame: 1
+  oneFacePerFrame: 0
   useRealtimeReflect: 1
-  radius: 2
+  radius: 4
   iterations: 2
 --- !u!4 &453440472
 Transform:
