@@ -6,7 +6,7 @@ public class test : SetupLux {
 	public int cubemapSize;
 	public bool oneFacePerFrame = false;
 	public bool useRealtimeReflect = false;
-	private Vector3 cameraPos = new Vector3 (0, 0,  0);
+	private Vector3 cameraPos = new Vector3 (0, 0, 0);
 	private Camera cam;
 	private Cubemap rtex;
 	private Cubemap diff;
@@ -167,7 +167,7 @@ public class test : SetupLux {
 					}
 
 					// Under pixel
-					for (y = yy; (y < yy + blurSize); --y) {
+					for (y = yy; (y > yy - blurSize); --y) {
 						if (y < 0) {
 							int index_x = xx;
 							int index_y = 0 - y;
@@ -289,9 +289,9 @@ public class test : SetupLux {
 			x = cubemapSize - index_y;
 			y = index_x;
 		} else if (face == CubemapFace.PositiveZ) {
-			targetFace = CubemapFace.NegativeY;
+			targetFace = CubemapFace.PositiveY;
 			x = index_x;
-			y = index_y;
+			y = cubemapSize - index_y;
 		} else if (face == CubemapFace.NegativeZ) {
 			targetFace = CubemapFace.PositiveY;
 			x = cubemapSize - index_x;
@@ -305,8 +305,8 @@ public class test : SetupLux {
 			x = index_x;
 			y = cubemapSize - index_y;
 		} else if (face == CubemapFace.NegativeY) {
-			targetFace = CubemapFace.PositiveZ;
-			x = index_x;
+			targetFace = CubemapFace.NegativeZ;
+			x = cubemapSize - index_x;
 			y = index_y;
 		} 
 		pixCol = image.GetPixel (targetFace, x, y);
@@ -322,7 +322,7 @@ public class test : SetupLux {
 			x = cubemapSize - index_y;
 			y = index_x;
 		} else if (face == CubemapFace.PositiveZ) {
-			targetFace = CubemapFace.PositiveY;
+			targetFace = CubemapFace.NegativeY;
 			x = index_x;
 			y = index_y;
 		} else if (face == CubemapFace.NegativeZ) {
@@ -335,10 +335,10 @@ public class test : SetupLux {
 			y = cubemapSize - index_x;
 		} else if (face == CubemapFace.PositiveY) {
 			targetFace = CubemapFace.PositiveZ;
-			x = index_x;
+			x = cubemapSize - index_x;
 			y = cubemapSize - index_y;
 		} else if (face == CubemapFace.NegativeY) {
-			targetFace = CubemapFace.NegativeZ;
+			targetFace = CubemapFace.PositiveZ;
 			x = index_x;
 			y = index_y;
 		} 
