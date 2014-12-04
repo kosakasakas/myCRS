@@ -115,7 +115,8 @@ public class test : SetupLux {
 		Cubemap output = new Cubemap (input.height, TextureFormat.ARGB32, true);
 		// copy cubemap
 		for (int i = 0; i < 6; ++i) {
-			output.SetPixels(input.GetPixels(face),face);
+			CubemapFace targetFace = (CubemapFace) i;
+			output.SetPixels(input.GetPixels(targetFace),targetFace);
 		}
 		output.Apply();
 

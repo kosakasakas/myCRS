@@ -3031,6 +3031,7 @@ GameObject:
   - 33: {fileID: 237726273}
   - 23: {fileID: 237726272}
   - 114: {fileID: 237726275}
+  - 114: {fileID: 237726276}
   m_Layer: 0
   m_Name: default
   m_TagString: Untagged
@@ -3090,6 +3091,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f76192f31cc84e28bb781da0d9f2210, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &237726276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 237726271}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 518e2392069e54af5b4b3ec7173344c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Width: 1920
+  Height: 1080
+  FPS: 30
 --- !u!1 &265969830
 GameObject:
   m_ObjectHideFlags: 0
@@ -3610,8 +3625,8 @@ MonoBehaviour:
   Lux_HDR_Scale: 6
   isLinear: 1
   LuxLighting: 0
-  Lux_IBL_DiffuseExposure: .5
-  Lux_IBL_SpecularExposure: .100000001
+  Lux_IBL_DiffuseExposure: .699999988
+  Lux_IBL_SpecularExposure: 0
   diffuseCube: {fileID: 0}
   diffuseIsHDR: 0
   specularCube: {fileID: 0}
@@ -3626,7 +3641,7 @@ MonoBehaviour:
   cubemapSize: 32
   oneFacePerFrame: 0
   useRealtimeReflect: 1
-  radius: 8
+  radius: 6
   iterations: 1
 --- !u!4 &453440472
 Transform:
@@ -4630,7 +4645,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &707612201
 Renderer:
   m_ObjectHideFlags: 0
