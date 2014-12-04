@@ -67,7 +67,7 @@ public class test : SetupLux {
 		if (! rtex) {
 			//rtex = new RenderTexture(cubemapSize, cubemapSize, 16);
 			rtex = new Cubemap(cubemapSize, TextureFormat.ARGB32, true);
-			spec = new Cubemap(bias * cubemapSize, TextureFormat.ARGB32, true);
+			spec = new Cubemap(cubemapSize, TextureFormat.ARGB32, true);
 			diff = new Cubemap(cubemapSize, TextureFormat.ARGB32, true);
 			//rtex.isCubemap = true;
 			rtex.filterMode = FilterMode.Trilinear;
@@ -86,7 +86,8 @@ public class test : SetupLux {
 		//cam.RenderToCubemap (this.specularCube, faceMask);
 		 //this.diffuseCube.hideFlags = HideFlags.HideAndDontSave;
 		cam.RenderToCubemap (  spec, faceMask);
-		spec.SmoothEdges ();
+		//spec.SmoothEdges (6);
+
 		//spec = rtex;
 		//diff = rtex;
 		//rtex.mipMapBias = 3.5f;
@@ -98,38 +99,43 @@ public class test : SetupLux {
 */
 		if (faceToRender >= 0) {
 			faceToRender = faceToRender % 6;
-			diff = FastBlur (diff, faceToRender, radius, iterations);
+			//diff = FastBlur (diff, faceToRender, radius, iterations);
 		//this.diffuseCube = rtex;
 		} else {
+			// blur
 			for (int i = 0; i < 6; ++i) {
-				diff = FastBlur ( diff, i, radius, iterations);
+				CubemapFace face = (CubemapFace) i;
+				diff.SetPixels(FastBlur ( spec, face, radius, iterations), face);
 			}
+			diff.Apply();
 		}
-
-		//this.diffuseCube = rtex;
-		//this.specularCube = rtex;
 	}
-	/*
-	Cubemap FastBlur(Cubemap image, int radius, int iterarions) {
-		return (Cubemap)FastBlur ((Texture)image, radius, iterarions);
-	}*/
-	Cubemap FastBlur(Cubemap image, int faceMask, int radius, int iterations) {
-		//Cubemap tex = new Cubemap (cubemapSize, TextureFormat.ARGB32, true);
-		Cubemap tex = image;
+	
+	Color[] FastBlur(Cubemap input, CubemapFace face, int radius, int iterations) {
+		Cubemap output = new Cubemap (input.height, TextureFormat.ARGB32, true);
+		// copy cubemap
+		for (int i = 0; i < 6; ++i) {
+			output.SetPixels(input.GetPixels(face),face);
+		}
+		output.Apply();
+
 		for(int i = 0; i < iterations; ++i) {
-			tex = BlurImage(image, faceMask, radius, true);
-			tex = BlurImage(image, faceMask, radius, false);
+			// x 
+			output.SetPixels(BlurImage( output, face, radius, true), face);
+			output.Apply();
+			// y
+			output.SetPixels(BlurImage( output, face, radius, false), face);
+			output.Apply();
 		}
-		return tex;
+
+		return output.GetPixels(face);
 	}
 
-	Cubemap BlurImage(Cubemap image, int faceMask, int blurSize, bool horizontal) {
-		//Cubemap blurred = new Cubemap (cubemapSize, TextureFormat.ARGB32, true);
-		Cubemap blurred = image;
+	Color[] BlurImage(Cubemap image, CubemapFace face, int blurSize, bool horizontal) {
+		Cubemap blurred = new Cubemap (image.height, TextureFormat.ARGB32, true);
 		int _W = cubemapSize;
 		int _H = cubemapSize;
 		int xx, yy, x, y;
-		CubemapFace face = (CubemapFace)faceMask;
 		if(horizontal) {
 			for (yy = 0; yy < _H; ++ yy) {
 				for( xx = 0; xx < _W; ++xx) {
@@ -138,12 +144,11 @@ public class test : SetupLux {
 					//Right side of pixel
 					for (x = xx; (x < xx + blurSize); ++x) {
 						if (x < _W) {
-							AddPixel(spec.GetPixel(face,  bias*x, bias*yy));
+							AddPixel(image.GetPixel(face,  x, yy));
 						} else { // over right pixel
 							int index_x = x - _W;
 							int index_y = yy;
 							Color col = getOverRightPixel(image, face, index_x, index_y);
-							//Color col = new Color(0,0,255);
 							AddPixel(col);
 						}
 					}
@@ -156,7 +161,7 @@ public class test : SetupLux {
 							Color col = getOverLeftPixel(image, face, index_x, index_y);
 							AddPixel(col);
 						} else {// over left pixel
-							AddPixel(spec.GetPixel( face, bias*x, bias*yy));
+							AddPixel(image.GetPixel( face, x, yy));
 						}
 					}
 
@@ -175,11 +180,11 @@ public class test : SetupLux {
 					// Over pixel
 					for (y = yy; (y < yy + blurSize); ++y) {
 						if (y < _H) {
-							AddPixel(spec.GetPixel(face, xx, y));
+							AddPixel(image.GetPixel(face, xx, y));
 						} else {
 							int index_x = xx;
 							int index_y = y - _H;
-							Color col = getOverBottomPixel(image, face, bias*index_x, bias*index_y);
+							Color col = getOverBottomPixel(image, face, index_x, index_y);
 							AddPixel(col);
 						}
 					}
@@ -192,7 +197,7 @@ public class test : SetupLux {
 							Color col = getOverTopPixel(image, face, index_x, index_y);
 							AddPixel(col);
 						} else {
-							AddPixel(spec.GetPixel(face, bias*xx, bias*y));
+							AddPixel(image.GetPixel(face, xx, y));
 						}
 					}
 
@@ -205,7 +210,7 @@ public class test : SetupLux {
 			}
 		}
 		blurred.Apply ();
-		return blurred;
+		return blurred.GetPixels(face);
 	}
 
 	void AddPixel(Color pixel) {
@@ -262,7 +267,7 @@ public class test : SetupLux {
 			x = index_y;
 			y = cubemapSize - index_x;
 		} 
-		pixCol = spec.GetPixel (targetFace, bias*x, bias*y);
+		pixCol = image.GetPixel (targetFace, x, y);
 		return pixCol;
 	}
 	Color getOverLeftPixel(Cubemap image, CubemapFace face, int index_x, int index_y) {
@@ -294,7 +299,7 @@ public class test : SetupLux {
 			x = index_y;
 			y = cubemapSize - index_x;
 		} 
-		pixCol = spec.GetPixel (targetFace, bias*x, bias*y);
+		pixCol = image.GetPixel (targetFace, x, y);
 		//pixCol = new Color (0, 0, 200);
 		return pixCol;
 	}
@@ -327,7 +332,7 @@ public class test : SetupLux {
 			x = cubemapSize - index_x;
 			y = index_y;
 		} 
-		pixCol = spec.GetPixel (targetFace, bias*x, bias*y);
+		pixCol = image.GetPixel (targetFace, x, y);
 		//pixCol = new Color (0, 0, 200);
 		return pixCol;
 	}
@@ -360,7 +365,7 @@ public class test : SetupLux {
 			x = index_x;
 			y = index_y;
 		} 
-		pixCol = spec.GetPixel (targetFace, bias*x, bias*y);
+		pixCol = image.GetPixel (targetFace, x, y);
 		//pixCol = new Color (0, 0, 200);
 		return pixCol;
 	}
