@@ -6,6 +6,8 @@ public class test : SetupLux {
 	public int cubemapSize;
 	public bool oneFacePerFrame = false;
 	public bool useRealtimeReflect = false;
+	public GameObject targetObj;
+	public float gamma = 2.0f;
 	private Vector3 cameraPos = new Vector3 (10, 0, 0);
 	private Camera cam;
 	private Cubemap rtex;
@@ -13,7 +15,7 @@ public class test : SetupLux {
 	private Cubemap spec;
 	private int bias = 8;
 
-	private int interval = 15;
+	private int interval = 8;
 
 	// for blur
 	public int radius = 2;
@@ -29,12 +31,21 @@ public class test : SetupLux {
 	// Use this for initialization
 	public override void Start () {
 		base.Start ();
+		updateCameraPosition ();
 		UpdateCubemap (63);
 	}
 	
 	// Update is called once per frame
 	public override void Update () {
 		base.Update ();
+		updateCameraPosition ();
+	}
+
+	void updateCameraPosition() {
+		if (targetObj != null) {
+			cameraPos = targetObj.transform.localPosition + new Vector3(10, 0, 0);
+		}
+		print (cameraPos.x);
 	}
 
 	void LateUpdate(){
@@ -97,6 +108,7 @@ public class test : SetupLux {
 			diff = rtex;
 		}
 */
+
 		if (faceToRender >= 0) {
 			faceToRender = faceToRender % 6;
 			//diff = FastBlur (diff, faceToRender, radius, iterations);
@@ -105,10 +117,23 @@ public class test : SetupLux {
 			// blur
 			for (int i = 0; i < 6; ++i) {
 				CubemapFace face = (CubemapFace) i;
-				diff.SetPixels(FastBlur ( spec, face, radius, iterations), face);
+				diff.SetPixels(GammaCorrection(FastBlur ( spec, face, radius, iterations), cubemapSize, cubemapSize, gamma), face);
 			}
 			diff.Apply();
 		}
+	}
+
+	Color[] GammaCorrection(Color[] input, int width, int height, float gamma) {
+		Color[] output = new Color[width * height];
+		for (int w = 0; w < width; ++w) {
+			for (int h = 0; h < height; ++h) {
+				output[width * w + h].r = 255.0f * Mathf.Pow(1.0f / 255.0f * input[width * w + h].r, 1.0f / gamma);
+				output[width * w + h].g = 255.0f * Mathf.Pow(1.0f / 255.0f * input[width * w + h].g, 1.0f / gamma);
+				output[width * w + h].b = 255.0f * Mathf.Pow(1.0f / 255.0f * input[width * w + h].b, 1.0f / gamma);
+				output[width * w + h].a = 255.0f;
+			}
+		}
+		return output;
 	}
 	
 	Color[] FastBlur(Cubemap input, CubemapFace face, int radius, int iterations) {
@@ -137,6 +162,7 @@ public class test : SetupLux {
 		int _W = cubemapSize;
 		int _H = cubemapSize;
 		int xx, yy, x, y;
+		float colBias = 1.0f;
 		if(horizontal) {
 			for (yy = 0; yy < _H; ++ yy) {
 				for( xx = 0; xx < _W; ++xx) {
@@ -156,7 +182,7 @@ public class test : SetupLux {
 
 					//Left side of pixel
 					for (x = xx; (x > xx - blurSize); --x) {
-						if (x < 0) {
+						if (x <= 0) {
 							int index_x = 0 - x;
 							int index_y = yy;
 							Color col = getOverLeftPixel(image, face, index_x, index_y);
@@ -169,7 +195,7 @@ public class test : SetupLux {
 					CalcPixel();
 
 					//for (x = xx; x < xx + blurSize && x < _W; ++x) {
-						blurred.SetPixel(face, xx, yy, new Color(avgR, avgG, avgB, 1.0f));
+					blurred.SetPixel(face, xx, yy, new Color(colBias*avgR, colBias*avgG, colBias*avgB, 1.0f));
 					//}
 				}
 			}
@@ -180,7 +206,7 @@ public class test : SetupLux {
 
 					// Over pixel
 					for (y = yy; (y < yy + blurSize); ++y) {
-						if (y < _H) {
+						if (y <= _H) {
 							AddPixel(image.GetPixel(face, xx, y));
 						} else {
 							int index_x = xx;
@@ -205,7 +231,7 @@ public class test : SetupLux {
 					CalcPixel();
 
 					//for (y = yy; (y < yy + blurSize && y < _H); ++y) {
-						blurred.SetPixel( face, xx, yy, new Color(avgR, avgG, avgB, 1.0f));
+					blurred.SetPixel( face, xx, yy, new Color(colBias* avgR, colBias*avgG,colBias* avgB, 1.0f));
 					//}
 				}
 			}
