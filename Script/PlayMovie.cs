@@ -8,7 +8,7 @@ public class PlayMovie : MonoBehaviour {
 		transform.localScale = new Vector3( -transform.localScale.x,
 		                                   transform.localScale.y,
 		                                   transform.localScale.z );
-		MovieTexture tex = (MovieTexture)renderer.material.mainTexture;
+		MovieTexture tex = (MovieTexture)GetComponent<Renderer>().material.mainTexture;
 		tex.loop = true;
 		tex.Play ();
 	}

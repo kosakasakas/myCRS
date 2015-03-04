@@ -56,7 +56,7 @@ public class test : SetupLux {
 			go.hideFlags = HideFlags.HideAndDontSave;
 			go.transform.position = cameraPos;
 			go.transform.rotation = Quaternion.identity;
-			cam = go.camera;
+			cam = go.GetComponent<Camera>();
 			cam.farClipPlane = 100; // don't render very far into cubemap
 			cam.enabled = false;
 		}

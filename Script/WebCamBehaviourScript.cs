@@ -18,7 +18,7 @@ public class WebCamBehaviourScript : MonoBehaviour
 		
 		// WebCamテクスチャを作成する
 		var webcamTexture = new WebCamTexture( Width, Height, FPS );
-		renderer.material.mainTexture = webcamTexture;
+		GetComponent<Renderer>().material.mainTexture = webcamTexture;
 		webcamTexture.Play();
 	}
 	
